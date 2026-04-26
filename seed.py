@@ -23,7 +23,12 @@ def init_db(conn: sqlite3.Connection) -> None:
 
 
 def seed_posts() -> int:
-    articles = fetch_news(RSS_URL, MAX_ITEMS)
+    try:
+        articles = fetch_news(RSS_URL, MAX_ITEMS)
+    except Exception as e:
+        print(f"RSS 수집 실패로 시드를 건너뜁니다: {e}")
+        return 0
+
     added_count = 0
 
     with sqlite3.connect(DB_PATH) as conn:
@@ -52,8 +57,5 @@ def seed_posts() -> int:
 
 
 if __name__ == "__main__":
-    try:
-        inserted = seed_posts()
-        print(f"{inserted}건 추가됨")
-    except requests.RequestException as e:
-        print(f"RSS 요청 중 오류가 발생했습니다: {e}")
+    inserted = seed_posts()
+    print(f"{inserted}건 추가됨")

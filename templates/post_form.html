@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ form_title }} - The Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: "#faf9f6",
+            secondary: "#79573f",
+            "on-surface": "#1a1c1a",
+            "on-surface-variant": "#47473f",
+            "outline-variant": "#c8c7bc",
+            error: "#ba1a1a",
+          },
+          spacing: {
+            "margin-page": "20px",
+            "stack-lg": "32px",
+            "stack-sm": "8px",
+            "stack-md": "16px",
+          },
+          fontFamily: {
+            headline: ["Epilogue"],
+            body: ["Be Vietnam Pro"],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen">
+  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-16 bg-[#FAF9F6] border-b border-[#D2B48C]/20">
+    <a href="{{ url_for('list_posts') }}" class="text-sm text-[#6F4E37]">목록</a>
+    <h1 class="text-xl font-bold text-[#6F4E37] font-headline tracking-tight">The Journal</h1>
+    <div></div>
+  </header>
+
+  <main class="pt-24 pb-16 px-margin-page max-w-2xl mx-auto">
+    <form action="{{ form_action }}" method="post" class="flex flex-col gap-stack-lg">
+      <div class="border-b border-outline-variant pb-stack-sm">
+        <h2 class="font-headline text-3xl mb-2">{{ form_title }}</h2>
+        <p class="text-on-surface-variant">따뜻한 톤의 화면에서 글을 작성해 보세요.</p>
+      </div>
+
+      {% if error %}
+      <div class="rounded-lg border border-error/40 bg-error/5 text-error px-4 py-3 text-sm">{{ error }}</div>
+      {% endif %}
+
+      <div>
+        <label for="title" class="block text-sm text-on-surface-variant mb-2">제목</label>
+        <input id="title" name="title" type="text" required value="{{ post.title if post else '' }}" class="w-full bg-transparent border-0 border-b border-[#D2B48C]/40 py-4 text-3xl font-headline placeholder:text-[#b8b5aa] focus:ring-0 focus:border-secondary" placeholder="제목을 입력하세요" />
+      </div>
+
+      <div>
+        <label for="content" class="block text-sm text-on-surface-variant mb-2">내용</label>
+        <textarea id="content" name="content" required class="w-full min-h-[360px] bg-white/50 border border-[#D2B48C]/30 rounded-xl p-5 text-lg leading-relaxed placeholder:text-[#b8b5aa] focus:ring-0 focus:border-secondary" placeholder="내용을 입력하세요">{{ post.content if post else '' }}</textarea>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <a href="{{ url_for('post_detail', post_id=post.id) if post and post.id else url_for('list_posts') }}" class="px-6 py-3 rounded-full border border-[#D2B48C]/40 text-[#6F4E37]">취소</a>
+        <button type="submit" class="px-8 py-3 rounded-full bg-secondary text-white">{{ submit_label }}</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>
